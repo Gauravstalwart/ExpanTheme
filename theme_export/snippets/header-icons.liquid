@@ -1,0 +1,157 @@
+{%- liquid
+  assign hide_icon_labels = true
+  if nav_position == 'below'
+    assign hide_icon_labels = false
+  endif
+-%}
+
+<div class="site-nav">
+  <div class="site-nav__icons">
+    <div class="right-search-icon">
+      <a href="{{ routes.search_url }}" class="site-nav__link site-nav__link--icon js-search-header js-no-transition">
+        <svg aria-hidden="true" focusable="false" role="presentation" class="icon icon-search hide" viewBox="0 0 64 64">
+          <defs><style>.cls-1{fill:none;stroke:#000;stroke-miterlimit:10;stroke-width:2px}</style></defs><path class="cls-1" d="M47.16 28.58A18.58 18.58 0 1 1 28.58 10a18.58 18.58 0 0 1 18.58 18.58zM54 54L41.94 42"/>
+        </svg>
+        <span class="icon__fallback-text">{{ 'general.search.title' | t }}</span>
+      </a>
+    </div>
+    {% if customer %}
+      <li class="site-nav__item site-nav__expanded-item site-nav--has-dropdown" aria-haspopup="true">
+        <a
+          href="{{ routes.account_url }}"
+          class="site-nav__link site-nav__link--underline site-nav__link--has-dropdown"
+        >
+          {{ 'customer.account.title' | t }}
+        </a>
+      </li>
+    {% else %}
+      <li class="site-nav__item site-nav__expanded-item site-nav--has-dropdown" aria-haspopup="true">
+        <a
+          href="javascript:;"
+          class="js-no-transition site-nav__link site-nav__link--underline site-nav__link--has-dropdown"
+        >
+          {{ 'customer.account.title' | t }}
+        </a>
+        <div class="site-nav__dropdown">
+          <ul class="site-nav__dropdown-animate site-nav__dropdown-list text-left">
+            {% assign login_link = routes.account_login_url %}
+            {% assign register_link = "/account/register" %}
+            {% if settings.toggle_classic_login  %}
+              {% assign login_link = "/account/login" %}
+            {% endif %}
+            <li class="">
+              <a href="{{ login_link }}" class="site-nav__dropdown-link site-nav__dropdown-link--second-level">
+                {{ 'customer.login.title' | t }}
+              </a>
+            </li>
+
+            <li class="">
+              <a
+                href="{{ routes.account_login_url }}"
+                class="site-nav__dropdown-link site-nav__dropdown-link--second-level"
+              >
+                {{ 'customer.login.B2B_title' | t }}
+              </a>
+            </li>
+            <li class="">
+      {% if settings.toggle_classic_login  %}
+              <a href="{{ register_link }}" class="site-nav__dropdown-link site-nav__dropdown-link--second-level">
+                {{ 'customer.register.title' | t }}
+              </a>
+        {% else %}
+        <a href="{{ login_link }}" class="site-nav__dropdown-link site-nav__dropdown-link--second-level">
+                {{ 'customer.register.title' | t }}
+              </a>
+        {% endif %}
+            </li>
+          </ul>
+        </div>
+      </li>
+    {% endif %}
+
+    <a
+      href="{{ routes.search_url }}"
+      class="site-nav__link site-nav__link--icon js-search-header small--show{% if nav_position == 'below' %} medium-up--hide{% endif %} js-no-transition"
+    >
+      <svg aria-hidden="true" focusable="false" role="presentation" class="icon icon-search" viewBox="0 0 64 64">
+        <defs><style>.cls-1{fill:none;stroke:#000;stroke-miterlimit:10;stroke-width:2px}</style></defs><path class="cls-1" d="M47.16 28.58A18.58 18.58 0 1 1 28.58 10a18.58 18.58 0 0 1 18.58 18.58zM54 54L41.94 42"/>
+      </svg>
+      <span class="icon__fallback-text">{{ 'general.search.title' | t }}</span>
+    </a>
+
+    <a
+      href="{{ routes.cart_url }}"
+      id="HeaderCartTrigger"
+      aria-controls="HeaderCart"
+      class="site-nav__link site-nav__link--icon js-no-transition {% if main_icon_alignment == 'icon-text' %} icon_with_text_wrapper {% elsif main_icon_alignment == 'icon' %} icon_wrapper {% elsif  main_icon_alignment == 'text' %} text_wrapper {% endif %}"
+      data-icon="{{ settings.cart_icon }}"
+    >
+      <span class="cart-link">
+        {%- if settings.cart_icon == 'cart' and main_icon_alignment == 'icon' or main_icon_alignment == 'text' -%}
+          <svg aria-hidden="true" focusable="false" role="presentation" class="icon icon-cart" viewBox="0 0 64 64">
+            <defs><style>.cls-1{fill:none;stroke:#000;stroke-miterlimit:10;stroke-width:2px}</style></defs><path class="cls-1" d="M14 17.44h46.79l-7.94 25.61H20.96l-9.65-35.1H3"/><circle cx="27" cy="53" r="2"/><circle cx="47" cy="53" r="2"/>
+          </svg>
+        {%- elsif settings.cart_icon == 'bag-minimal'
+          and main_icon_alignment == 'icon'
+          or main_icon_alignment == 'text'
+        -%}
+          <svg
+            aria-hidden="true"
+            focusable="false"
+            role="presentation"
+            class="icon icon-bag-minimal"
+            viewBox="0 0 64 64"
+          >
+            <defs><style>.cls-1{fill:none;stroke:#000;stroke-width:2px}</style></defs><path id="svg_2" data-name="svg 2" class="cls-1" d="M22.53 16.61c0-7.1 4.35-9 9.75-9s9.75 1.9 9.75 9"/><path id="svg_4" data-name="svg 4" class="cls-1" d="M11.66 16.65h41.25V53.4H11.66z"/>
+          </svg>
+        {%- elsif main_icon_alignment == 'icon' or main_icon_alignment == 'text' -%}
+          <svg aria-hidden="true" focusable="false" role="presentation" class="icon icon-bag" viewBox="0 0 64 64">
+            <defs><style>.cls-1{fill:none;stroke:#000;stroke-width:2px}</style></defs><path class="cls-1" d="M24.23 18c0-7.75 3.92-14 8.75-14s8.74 6.29 8.74 14M14.74 18h36.51l3.59 36.73h-43.7z"/>
+          </svg>
+        {%- endif -%}
+        {% if main_icon_alignment == 'icon' or main_icon_alignment == 'text' -%}
+          <span class="cart-link__bubble{% if cart.item_count > 0 %} cart-link__bubble--visible{% endif %}">
+            <span class="cart-link__bubble-num">{{ cart.item_count }}</span>
+          </span>
+        {% endif %}
+      </span>
+      {% if main_icon_alignment == 'text' %}
+        <span class="site-nav__icon-label small--hide{% if hide_icon_labels %} icon__fallback-text{% endif %}">
+          {{ 'layout.cart.title' | t }}
+        </span>
+      {% endif %}
+      {% if settings.cart_icon == 'cart' and main_icon_alignment == 'icon-text' %}
+        <svg aria-hidden="true" focusable="false" role="presentation" class="icon icon-cart" viewBox="0 0 64 64">
+          <defs><style>.cls-1{fill:none;stroke:#000;stroke-miterlimit:10;stroke-width:2px}</style></defs><path class="cls-1" d="M14 17.44h46.79l-7.94 25.61H20.96l-9.65-35.1H3"/><circle cx="27" cy="53" r="2"/><circle cx="47" cy="53" r="2"/>
+        </svg>
+      {%- elsif settings.cart_icon == 'bag-minimal' and main_icon_alignment == 'icon-text' -%}
+        <svg aria-hidden="true" focusable="false" role="presentation" class="icon icon-bag-minimal" viewBox="0 0 64 64">
+          <defs><style>.cls-1{fill:none;stroke:#000;stroke-width:2px}</style></defs><path id="svg_2" data-name="svg 2" class="cls-1" d="M22.53 16.61c0-7.1 4.35-9 9.75-9s9.75 1.9 9.75 9"/><path id="svg_4" data-name="svg 4" class="cls-1" d="M11.66 16.65h41.25V53.4H11.66z"/>
+        </svg>
+      {%- elsif main_icon_alignment == 'icon-text' -%}
+        <svg aria-hidden="true" focusable="false" role="presentation" class="icon icon-bag" viewBox="0 0 64 64">
+          <defs><style>.cls-1{fill:none;stroke:#000;stroke-width:2px}</style></defs><path class="cls-1" d="M24.23 18c0-7.75 3.92-14 8.75-14s8.74 6.29 8.74 14M14.74 18h36.51l3.59 36.73h-43.7z"/>
+        </svg>
+      {%- endif -%}
+      {% if main_icon_alignment == 'icon-text' %}
+        <span class="cart-link__bubble{% if cart.item_count > 0 %} cart-link__bubble--visible{% endif %}">
+          <span class="cart-link__bubble-num">{{ cart.item_count }}</span>
+        </span>
+      {% endif %}
+      {% if main_icon_alignment == 'icon-text' %}
+        <span class="site-nav__icon-label small--hide{% if hide_icon_labels %} icon__fallback-text{% endif %}">
+          {{ 'layout.cart.title' | t }}
+        </span>
+      {% endif %}
+    </a>
+  </div>
+
+  <div class="site-nav__close-cart">
+    <button type="button" class="site-nav__link site-nav__link--icon js-close-header-cart">
+      <span>{{ 'general.accessibility.close' | t }}</span>
+      <svg aria-hidden="true" focusable="false" role="presentation" class="icon icon-close" viewBox="0 0 64 64">
+        <defs><style>.cls-1{fill:none;stroke:#000;stroke-miterlimit:10;stroke-width:2px}</style></defs><path class="cls-1" d="M19 17.61l27.12 27.13m0-27.13L19 44.74"/>
+      </svg>
+    </button>
+  </div>
+</div>

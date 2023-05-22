@@ -1,0 +1,24 @@
+<div class="loyal-customer enlarge-text">
+  {% assign b2b_customer = false %}
+  {% for tag in customer.tags %}
+    {% if tag contains 'b2b' %}
+      {% assign b2b_customer = true %}
+     {% endif %} 
+  {% endfor %}
+{% if customer %}
+  <div class="customer-detail">
+    {% assign name = customer.name %}
+    <p>{{ 'customer.loyalty.hello_msg' | t: name: name }}</p>
+  </div>
+  {% if customer.metafields.custom.loyalty_points.value != blank and b2b_customer != true %}
+  <div class="loyalty-point">
+    {% assign loyalty_point = customer.metafields.custom.loyalty_points.value %}   
+    <p> {{ 'customer.loyalty.loyalty_point_with_msg' | t: loyalty_point: loyalty_point }}</p>
+  </div>
+    {% endif %}
+  {% else %}
+<div class="login-msg">
+  <p><a href="/account/login?return_url={{ request.path }}">{{ 'customer.loyalty.login_msg' | t }}</a></p>
+</div>
+{% endif %}
+</div>

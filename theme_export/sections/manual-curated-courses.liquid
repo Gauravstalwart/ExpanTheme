@@ -1,0 +1,145 @@
+{%- liquid
+  assign collection = collections[section.settings.home_featured_products]
+  assign product_limit = section.settings.count | plus: 1
+  if section.settings.mobile_scrollable
+    assign product_limit = section.settings.count 
+  endif
+  
+-%}
+<div
+  id="CollectionSection-{{ section.id }}"
+  data-section-id="{{ section.id }}"
+  data-section-type="collection-template">
+  {%- if section.settings.title != blank and product.metafields["custom"]["manual_curated_products"].value != blank -%}
+    <div class="page-width">
+      <div class="section-header {% if section.settings.view_all %} section-header--with-link{% endif %}">
+        <h2 class="section-header__title">
+          {{ section.settings.title }}
+        </h2>
+        {%- if section.settings.view_all != blank and section.settings.view_all_link != blank -%}
+          <a href="{{ section.settings.view_all_link  }}" class="section-header__link">{{ 'collections.general.all_of_collection' | t }}</a>
+        {%- endif -%}
+      </div>
+    </div>
+  {%- endif -%}
+  {% assign counter = 0 %}
+  {% assign current_product = product.handle %}
+  <div class="page-width{% if section.settings.mobile_scrollable %} page-width--flush-small{% endif %}">
+    
+    <div
+      class="new-grid product-grid{% if section.settings.mobile_scrollable %} scrollable-grid--small{% endif %}"
+      data-view="{% if section.settings.mobile_scrollable %}scrollable-{{ section.settings.product_per_row }}{% else %}grid-item{% endif %}">
+        {%- liquid
+          for product in product.metafields["custom"]["manual_curated_products"].value 
+            assign item_classes = ''
+            unless section.settings.mobile_scrollable
+              if forloop.index > section.settings.count
+                assign item_classes = 'hide'
+                assign mod = forloop.index | modulo: 2
+                if mod == 0
+                  assign item_classes = 'medium-up--hide'
+                endif
+              endif
+            endunless
+            render 'academy-product-grid-item', product: product, collection: collection, classes: item_classes 
+            
+          endfor
+        -%}
+    </div>
+  </div>
+</div>
+
+
+{% schema %}
+  {
+    "name": "Manual Curated Courses",
+    "class": "grid_list_margin featured-collection-grid featured-collection-grid-wrap manual-curated-courses",
+    "settings": [
+       {
+      "type": "text",
+      "id": "title",
+      "label": "t:sections.featured-collection.settings.title.label",
+      "default": "Featured collection"
+    },
+    {
+      "type": "select",
+      "id": "title_position",
+      "label": "Product Title Position",
+      "default": "top",
+      "options": [
+        {
+          "value": "top",
+          "label": "Top"
+        },
+        {
+          "value": "bottom",
+          "label": "Bottom"
+        }
+      ]
+    },
+    {
+      "type": "color",
+      "id": "title_text_color",
+      "label": "Product Title Text Color"
+    }, 
+    {
+      "type": "text",
+      "id": "btn_title",
+      "label": "Product Button Label",
+      "default": "See Course"
+    },  
+    {
+      "type": "checkbox",
+      "id": "view_all",
+      "label": "t:sections.featured-collection.settings.view_all.label",
+      "default": true
+    },  
+    {
+      "type": "url",
+      "id": "view_all_link",
+      "label": "View all link"
+    },  
+      {
+      "type": "range",
+      "id": "count",
+      "label": "t:sections.featured-collection.settings.count.label",
+      "default": 3,
+      "min": 3,
+      "max": 12
+    },
+    {
+      "type": "select",
+      "id": "product_per_row",
+      "label": "Products per row",
+      "default": "3",
+      "options": [
+        {
+          "value": "3",
+          "label": "3"
+        },
+        {
+          "value": "4",
+          "label": "4"
+        }
+      ]
+    },
+    {
+      "type": "checkbox",
+      "id": "mobile_scrollable",
+      "label": "t:sections.featured-collection.settings.mobile_scrollable.label",
+      "default": true
+    }
+    ],
+    "presets": [
+    {
+      "name": "Manual Curated Courses"
+    }
+  ]
+  }
+{% endschema %}
+
+{% stylesheet %}
+{% endstylesheet %}
+
+{% javascript %}
+{% endjavascript %}

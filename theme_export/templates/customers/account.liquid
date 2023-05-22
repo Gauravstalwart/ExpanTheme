@@ -1,0 +1,158 @@
+
+{%- paginate customer.orders by 20 -%}
+  <div class="page-width page-content customer-account-wrapper">
+    <header class="section-header section-header--with-link">
+      <h1 class="section-header__title">{{ 'customer.account.title' | t }}</h1>
+      <a href="{{ routes.account_logout_url }}" class="section-header__link">{{ 'layout.customer.log_out' | t }}</a>
+    </header>
+
+    <div class="grid">
+      <div class="grid__item medium-up--two-thirds">
+        <h2>{{ 'customer.orders.title' | t }}</h2>
+
+        {%- if customer.orders.size != 0 -%}
+          <table class="table--responsive table--small-text">
+            <thead>
+              <tr>
+                <th>{{ 'customer.orders.order_number' | t }}</th>
+                <th>{{ 'customer.orders.date' | t }}</th>
+                <th>{{ 'customer.orders.payment_status' | t }}</th>
+                <th>{{ 'customer.orders.fulfillment_status' | t }}</th>
+                <th>{{ 'customer.orders.total' | t }}</th>
+                <th><span class="table">Invoice</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              {%- for order in customer.orders -%}
+                <tr class="table__section">
+                  <td data-label="{{ 'customer.orders.order_number' | t }}">
+                    {{ order.name | link_to: order.customer_url, class:'underline-links strong-links'}}
+                  </td>
+                  <td data-label="{{ 'customer.orders.date' | t }}">
+                    {{ order.created_at | time_tag: format: 'date' }}
+                  </td>
+                  <td data-label="{{ 'customer.orders.payment_status' | t }}">{{ order.financial_status_label }}</td>
+                  <td data-label="{{ 'customer.orders.fulfillment_status' | t }}">
+                    {{ order.fulfillment_status_label }}
+                  </td>
+                  <td data-label="{{ 'customer.orders.total' | t }}">{{ order.total_price | money }}</td>
+                <td>
+                <span class="invoice">
+                <a target="_blank" href="{{ shop.url }}/apps/sufio/invoice/?id={{ order.id }}&number={{ order.order_number }}" class="underline-links strong-links">VIEW</a>
+                | <a target="_blank" href="{{ shop.url }}/apps/sufio/invoice/download/?id={{ order.id }}&number={{ order.order_number }}" class="underline-links strong-links">DOWNLOAD</a>
+                </span>
+                </td>
+                </tr>
+              {%- endfor -%}
+            </tbody>
+          </table>
+
+          <hr class="hr--clear">
+
+        {%- else -%}
+          <p>{{ 'customer.orders.none' | t }}</p>
+        {%- endif -%}
+      </div>
+
+      <div class="grid__item medium-up--one-third">
+        <h3>{{ 'customer.account.details' | t }}</h3>
+
+        <p class="h5">{{ customer.name }}</p>
+
+        {{ customer.default_address | format_address }}
+        <!--
+          Shopify customer account -- capture and validate VAT numbers and set business customers as tax exempt when applicable. Used by Sufio for Shopify (www.sufio.com/shopify).
+        -->
+
+        <p class="h5">
+          
+          <a href="{{ routes.account_addresses_url }}" class="text-link" style="text-decoration: underline;">
+            {{- 'customer.account.view_addresses' | t }} ({{ customer.addresses_count }})</a
+          >
+        </p>
+        <div class="vat-number-display">
+          {% if customer.metafields.sufio.vat_number %}
+            {{ 'general.vat.title' | t }}: {{ customer.metafields.sufio.vat_number }}
+            <a href="#" class="vat-edit-link">{{ 'general.vat.vat_edit' | t }}</a>
+          {% else %}
+            <a href="#" class="vat-edit-link">{{ 'general.vat.add_msg' | t }}</a>
+          {% endif %}
+        </div>
+        <div class="vat-number-form" style="display:none">
+          <form>
+            <label for="customer_acc_vat_reg_no">{{ 'general.vat.title' | t }}
+              
+              </label>  
+            <div class="vat-input">
+            <input
+              type="text"
+              id="customer_acc_vat_reg_no"
+              name="customer[note][VAT Registration Number]"
+              placeholder="VAT Registration Number"
+              value="{{ cart.attributes['VAT Number Valid'] }}"
+            >
+            <input type="submit" value="Save" class="btn">
+  <a href="#" class="btn vat-cancel-link">{{ 'general.vat.vat_cancel' | t }}</a>
+            </div>
+          </form>
+        </div>
+  
+         {% assign b2b_customer = false %}
+          {% for tag in customer.tags %}
+            {% if tag contains 'b2b' %}
+              {% assign b2b_customer = true %}
+             {% endif %} 
+          {% endfor %}
+     {% if  b2b_customer == false and customer.metafields.custom.loyalty_points.value != blank %}
+      <div class="loyalty-point">
+        {% assign loyalty_point = customer.metafields.custom.loyalty_points.value %}   
+        <p class="h5">{{ 'general.vat.loyalty_program' | t }}</p>
+        <p> {{ 'customer.loyalty.loyalty_point_with_msg' | t: loyalty_point: loyalty_point }}</p>  
+        <a href="/collections/loyalty-program">{{ 'general.vat.link' | t }}</a>
+      </div>
+        {% endif %}
+
+        <script type="text/javascript">
+          document.addEventListener("DOMContentLoaded", function(event) {
+            $('a.vat-cancel-link').hide();
+            $('a.vat-edit-link').click( function() {
+              $(this).hide();
+              $('a.vat-cancel-link').show();
+              $('.vat-number-display').hide();
+              $('.vat-number-form').show();
+              return false;
+              });
+            $('a.vat-cancel-link').click( function() {
+              $(this).hide();
+              $('a.vat-edit-link').show()
+              $('.vat-number-display').show();
+              $('.vat-number-form').hide();
+              return false;
+              });
+
+            $('.vat-number-form form').submit( function() {
+              var vat_reg_no = $('input#customer_acc_vat_reg_no').val();
+              $.ajax({
+                type : "GET",
+                dataType: "jsonp",
+                url: "/apps/sufio/customer-vat/",
+                data: { email: "{{ customer.email }}", vat_no: vat_reg_no, update: true },
+                success: function(data) {
+                  location.reload();
+                }
+              });
+
+              return false;
+            });
+          });
+        </script>
+      </div>
+    </div>
+
+    {%- liquid
+      if paginate.pages > 1
+        render 'pagination', paginate: paginate
+      endif
+    -%}
+  </div>
+{%- endpaginate -%}

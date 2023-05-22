@@ -1,0 +1,43 @@
+<style>
+  #shopify-section-{{ section.id }} .empty_space{display: block;width: 100%;height: {{ section.settings.empty_space_desktop }}px;}
+  @media(max-width: 1024px){
+    #shopify-section-{{ section.id }} .empty_space{height: {{ section.settings.empty_space_table }}px;}
+  }
+  @media(max-width: 768px){
+    #shopify-section-{{ section.id }} .empty_space{height: {{ section.settings.empty_space_mobile }}px;}
+  }
+</style>
+<div class="empty_space"></div>
+{% schema %}
+  {
+    "name": "Spacer",
+    "settings": [
+      {
+        "type":"text",
+        "id":"empty_space_desktop",
+        "label":"Empty Space Desktop"
+      },
+      {
+        "type":"text",
+        "id":"empty_space_table",
+        "label":"Empty Space Tablet"
+      },
+      {
+        "type":"text",
+        "id":"empty_space_mobile",
+        "label":"Empty Space Mobile"
+      }
+    ],
+    "presets": [
+      {
+        "name":"Spacer"
+      }
+    ]
+  }
+{% endschema %}
+
+{% stylesheet %}
+{% endstylesheet %}
+
+{% javascript %}
+{% endjavascript %}

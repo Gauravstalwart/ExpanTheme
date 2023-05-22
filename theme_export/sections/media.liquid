@@ -1,0 +1,154 @@
+{% if section.blocks.size > 0 %}
+  <div class="fancybox_main {{ section.settings.class_name  }}">
+    <div class="fancybox_wrap page-width">
+      <div class="fancybox_inner">
+        <ul class="fancybox_list d_column_{{ section.settings.fancybox_desktop_column  }} t_column_{{ section.settings.fancybox_tablet_column  }} m_column_{{ section.settings.fancybox_mobile_column  }}">
+            {% for block in section.blocks %}
+            <li class="fancybox_item fancybox_item{{ forloop.index }}">
+              <div class="fancybox_item_wrap">
+                <a href="{{ block.settings.fancybox_image | img_url: 'master'  }}" class="fancybox_item_link" data-fancybox="gallery" data-caption="">
+                  <img class="fancybox_item_img" src="{{ block.settings.fancybox_image | img_url: 'master'  }}" >
+                </a>
+              </div>
+            </li>
+            {% endfor %}
+        </ul>
+      </div>
+    </div>
+  </div>
+<!--   <div class="fancy_model_main">
+    <div class="fancy_model_wrap">
+      <div class="fancy_model_inner">
+        <div class="fancy_model_img_wrap">
+          <img class="fancy_model_img" src="" >
+        </div>
+        <div class="fancy_model_thumb_wrap">
+          {% for block in section.blocks %}
+            <img class="fancy_model_thumb" src="{{ block.settings.fancybox_image | img_url: 'master'  }}" >
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div> -->
+{% endif %}
+
+{% schema %}
+  {
+    "name": "Media",
+    "settings": [
+      {
+        "type": "text",
+        "id": "class_name",
+        "label": "Class Name"
+      },
+      {
+        "type": "range",
+        "id": "fancybox_column_space",
+        "min": 0,
+        "max": 100,
+        "step": 1,
+        "label": "Column Gap",
+        "default": 25
+      },
+      {
+        "type": "range",
+        "id": "fancybox_row_space",
+        "min": 0,
+        "max": 100,
+        "step": 1,
+        "label": "Row Gap",
+        "default": 25
+      },
+      {
+        "type": "range",
+        "id": "fancybox_desktop_column",
+        "min": 0,
+        "max": 10,
+        "step": 1,
+        "label": "Desktop column",
+        "default": 4
+      },
+      {
+        "type": "range",
+        "id": "fancybox_tablet_column",
+        "min": 0,
+        "max": 10,
+        "step": 1,
+        "label": "Tablet column",
+        "default": 4
+      },
+      {
+        "type": "range",
+        "id": "fancybox_mobile_column",
+        "min": 0,
+        "max": 10,
+        "step": 1,
+        "label": "Mobile column",
+        "default": 4
+      }
+    ],
+    "blocks": [
+      {
+        "type": "fancybox_type",
+        "name": "FancyBox Item",
+        "settings": [
+          {
+            "type": "image_picker",
+            "id": "fancybox_image",
+            "label": "Select Images"
+          }
+        ]
+      }
+    ]
+  }
+{% endschema %}
+
+{% stylesheet %}
+  body.media_page {background: #f2eeee; }
+  .fancy_model_main{display: none;}
+  .fancybox_list{column-count: 4; column-gap: 20px; list-style: none; margin: 0px; padding: 0; }
+  .fancybox_list .fancybox_item{-webkit-column-break-inside: avoid; page-break-inside: avoid; break-inside: avoid; margin: 0px 0px 20px; line-height: 0; }
+  .fancybox_list .fancybox_item .fancybox_item_wrap{border-radius: 6px; overflow: hidden; box-shadow: 4px 4px 10px 0px #0000001f; }
+  .fancybox_list .fancybox_item .fancybox_item_wrap .fancybox_item_link{display: block; }
+  .fancybox_list .fancybox_item .fancybox_item_wrap .fancybox_item_img{width: 100%; }
+
+  .fancybox-show-thumbs .fancybox-inner {right: 0 !important; bottom: 125px; }
+  .fancybox-show-thumbs .fancybox-thumbs {top: auto; width: auto; bottom: 0; left: 0; right : 0; height: auto; padding: 0px 5px 5px; background: rgba(0, 0, 0, 0.3); }
+  .fancybox-thumbs__list a{aspect-ratio: 1; width: 75px !important; height: auto !important; max-width: inherit !important; max-height: inherit !important; margin: 5px !important; }
+  .fancybox-thumbs__list a:before{opacity: 0.75 !important; border: none !important; background: #000; }
+  .fancybox-thumbs__list a.fancybox-thumbs-active:before{ background: transparent; }
+  @media(max-width: 768px){
+    .fancybox-slide--image{padding: 44px 15px !important;}
+  }
+  
+{% endstylesheet %}
+<style>
+  .fancybox_list{column-gap: {{ section.settings.fancybox_column_space }}px;}
+  .fancybox_list .fancybox_item{margin: 0px 0px {{ section.settings.fancybox_row_space }}px;}
+  
+  .fancybox_list{column-count: {{ section.settings.fancybox_desktop_column }};}
+  @media(min-width: 769px) and (max-width: 1024px){
+    .fancybox_list{column-count: {{ section.settings.fancybox_tablet_column }};}
+  }
+  @media(max-width: 768px){
+    .fancybox_list{column-count: {{ section.settings.fancybox_mobile_column }};}
+  }
+</style>
+
+
+{% javascript %}
+  // $(document).ready(function(){
+    
+  // });
+// if (typeof fancybox !== "undefined") { 
+//     $('[data-fancybox]').fancybox({
+//       thumbs : {
+//         autoStart : true,
+//         axis      : 'x'
+//       },
+//       loop: true,
+//       wheel : true,
+//       transitionEffect: "slide",
+//     });
+// }
+{% endjavascript %}
