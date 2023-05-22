@@ -1,0 +1,100 @@
+<div class="grid-item grid-product {{ classes }}" data-product-handle="{{ product.handle }}" data-product-id="{{ product.id }}">
+  <div class="grid-item__content">
+    {%- liquid
+      assign fixed_aspect_ratio = false
+      unless settings.product_grid_image_size == 'natural'
+        assign fixed_aspect_ratio = true
+      endunless
+
+      assign preview_image = product.featured_media.preview_image
+      assign img_url = preview_image | img_url: '1x1' | replace: '_1x1.', '_{width}x.'
+    -%}
+
+     
+      <div class="grid-product__image-wrap">
+        <a href="{{ product.url | within: collection }}" class="grid-item__link">
+        {%- if fixed_aspect_ratio -%}
+          <div
+            class="grid__image-ratio grid__image-ratio--{{ settings.product_grid_image_size }}">
+            <img class="lazyload{% unless settings.product_grid_image_fill %} grid__image-contain{% endunless %}"
+                data-src="{{ img_url }}"
+                data-widths="[160, 200, 280, 360, 540, 720, 900]"
+                data-aspectratio="{{ preview_image.aspect_ratio }}"
+                data-sizes="auto"
+                alt="{{ preview_image.alt | escape }}">
+            <noscript>
+              <img class="grid-product__image lazyloaded"
+                src="{{ preview_image | img_url: '400x' }}"
+                alt="{{ preview_image.alt | escape }}">
+            </noscript>
+          </div>
+        {%- else -%}
+          {%- liquid
+            assign ratio = 1
+            if preview_image != blank
+              assign ratio = preview_image.aspect_ratio
+            endif
+          -%}
+          <div style="height: 0; padding-bottom: {{ 100 | divided_by: ratio }}%;">
+            <img class="grid-product__image lazyload"
+                data-src="{{ img_url }}"
+                data-widths="[360, 540, 720, 900, 1080]"
+                data-aspectratio="{{ preview_image.aspect_ratio }}"
+                data-sizes="auto"
+                alt="{{ preview_image.alt | escape }}">
+            <noscript>
+              <img class="grid-product__image lazyloaded"
+                src="{{ preview_image | img_url: '400x' }}"
+                alt="{{ preview_image.alt | escape }}">
+            </noscript>
+          </div>
+        {%- endif -%}
+
+        {%- if settings.product_hover_image and product.media.size > 1 -%}
+          {%- for media in product.media offset: 1 limit: 1 -%}
+            {%- assign second_image = media.preview_image -%}
+          {%- endfor -%}
+          <div class="grid-product__secondary-image small--hide">
+            {%- assign img_url = second_image | img_url: '1x1' | replace: '_1x1.', '_{width}x.' -%}
+            <img class="lazyload"
+                data-src="{{ img_url }}"
+                data-widths="[360, 540, 720, 1000]"
+                data-aspectratio="{{ second_image.aspect_ratio }}"
+                data-sizes="auto"
+                alt="{{ second_image.alt }}">
+          </div>
+        {%- endif -%}
+        <div class="course_prod_heading course_pisition--{{ section.settings.title_position }}" style="color: {{ section.settings.title_text_color }}">
+        <h3>{{ product.title }} </h3>
+        </div>  
+        </a>  
+      </div>
+    {% if  product.metafields.custom.cource_product_subheading != blank or product.metafields.custom.cource_product_sub_description != blank or section.settings.btn_title != blank %}
+      <div class="grid-item__meta">
+        <div class="grid-item__meta-main">
+          {%  assign current_variant = product.selected_or_first_available_variant %}
+           {%- unless product.empty? -%}
+               <div class="grid-item_product_price">
+                {%- render 'price' with current_variant.price, product:product -%}
+               </div>
+           {% endunless %}  
+          {% if product.metafields.custom.cource_product_subheading != blank %}
+             <h2 class="course_product_subheading">{{ product.metafields.custom.cource_product_subheading }}</h2> 
+          {% endif %}  
+            {% if product.metafields.custom.cource_product_sub_description != blank %}
+          <div class="product-sort-desc">
+            {{ product.metafields.custom.cource_product_sub_description}}
+          </div>
+            {% endif %} 
+          {% if section.settings.btn_title != blank %} 
+             <a href="{{ product.url | within: collection }}" class="grid-item__link">
+           <div class="product-btn btn">
+               {{ section.settings.btn_title  }}
+           </div>  
+             </a>   
+          {% endif %}
+        </div>
+      </div>  
+      {% endif %} 
+  </div>
+</div>

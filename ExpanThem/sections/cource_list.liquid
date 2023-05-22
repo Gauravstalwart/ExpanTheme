@@ -1,0 +1,75 @@
+<div class="cource_list_main">
+	<div class="cource_list_wrap page-width">
+		<div class="cource_list_inner">
+			<div class="grid-item {% if product.metafields["custom"]["how_does"] == blank %}faq-center{% endif %}">
+             {% if product.metafields["custom"]["how_does"] != blank %} 
+				<div class="cource_list_left three-fifths small--one-whole">{{ product.metafields["custom"]["how_does"] }}</div>
+              {% endif %}
+               {%- if product.metafields.custom.cource_faq_question_1.value != blank or product.metafields.custom.cource_faq_answer_1.value != blank   -%}
+				<div class="cource_list_right two-fifths small--one-whole">
+					<div class="section-header_wrap">
+                      {%- if section.settings.right_title != blank -%}
+						<h2 class="">{{ section.settings.right_title }}</h2>
+                        {%- endif -%}   
+						<div class="faq_main">
+							<div class="faq_wrap">
+                               {%- assign prod_meta = product.metafields.custom -%}
+								<div class="faq_inner">
+                                  {% for i in (1..6) %}
+                                  {% assign meta_key = "cource_faq_question_" | append:i %}
+                                  {% assign meta_key2 = "cource_faq_answer_" | append:i %}
+                                  {% if prod_meta[meta_key] != blank %}
+                                      <div class="faq_item">
+                                        {%- if prod_meta[meta_key] != blank -%}
+										<button type="button" class="label collapsible-trigger collapsible-trigger-btn collapsible-trigger-btn--borders collapsible--auto-height" aria-controls="Product-content-{{ forloop.index }}" aria-expanded="false">
+  										  <span class="collapsible-trigger__layout">
+  										    <span class="collapsible_title">{{  prod_meta[meta_key] }}</span>
+  										    <span class="collapsible-trigger__icon collapsible-trigger__icon--open" role="presentation"></span>
+  										  </span>
+  										</button>
+                                          {%- endif -%}  
+                                          {%- if prod_meta[meta_key2] != blank -%}
+  										<div id="Product-content-{{ forloop.index }}" class="collapsible-content collapsible-content--all">
+  										    <div class="collapsible-content__inner rte">
+  										        {{ prod_meta[meta_key2] }} 
+  										    </div>
+  										</div>
+                                          {%- endif -%}
+  									</div>
+                                  {%- endif -%}
+                                   {%- endfor -%}  
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+               {%- endif -%} 
+			</div>
+		</div>
+	</div>
+</div>
+
+{% schema %}
+  {
+    "name": "Cource FAQ and Content",
+    "class":"course_list",
+    "settings": [
+        {
+          "type":"header",
+          "content":"This section is connected with the Metafield"
+        },
+        {
+         "type": "text",
+         "id": "right_title",
+         "label": "Cource faq Title",
+         "default": "Course Faq"
+         }
+    ]
+  }
+{% endschema %}
+
+{% stylesheet %}
+{% endstylesheet %}
+
+{% javascript %}
+{% endjavascript %}

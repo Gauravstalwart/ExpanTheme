@@ -1,0 +1,90 @@
+<div class="page-width page-width--tiny page-content">
+  <header class="section-header text-center">
+    <h1 class="section-header__title">{{ 'customer.register.title' | t }}</h1>
+  </header>
+
+  <div class="form-vertical">
+    {%- form 'create_customer' -%}
+      {{ form.errors | default_errors }}
+
+      <label for="FirstName">{{ 'customer.register.first_name' | t }}</label>
+      <input
+        type="text"
+        name="customer[first_name]"
+        id="FirstName"
+        class="input-full"
+        {% if form.first_name %}
+          value="{{ form.first_name }}"
+        {% endif %}
+        autocapitalize="words"
+        autofocus
+      >
+
+      <label for="LastName">{{ 'customer.register.last_name' | t }}</label>
+      <input
+        type="text"
+        name="customer[last_name]"
+        id="LastName"
+        class="input-full"
+        {% if form.last_name %}
+          value="{{ form.last_name }}"
+        {% endif %}
+        autocapitalize="words"
+      >
+
+      <label for="Email">{{ 'customer.register.email' | t }}</label>
+      <input
+        type="email"
+        name="customer[email]"
+        id="Email"
+        class="input-full{% if form.errors contains 'email' %} error{% endif %}"
+        {% if form.email %}
+          value="{{ form.email }}"
+        {% endif %}
+        autocorrect="off"
+        autocapitalize="off"
+      >
+
+      <label for="CreatePassword">{{ 'customer.register.password' | t }}</label>
+      <input
+        type="password"
+        name="customer[password]"
+        id="CreatePassword"
+        class="input-full{% if form.errors contains 'password' %} error{% endif %}"
+      >
+
+      <!--
+        Shopify customer registration -- capture VAT numbers from customers. Used by Sufio for Shopify (www.sufio.com/shopify).
+      -->
+      <label for="vat_reg_no">{{ 'general.vat.title' | t }}</label>
+      <input
+        type="text"
+        class="input-full"
+        id="vat_reg_no"
+        name="customer[note][VAT Registration Number]"
+      >
+
+      <p>
+        <input type="submit" value="{{ 'customer.register.submit' | t }}" class="btn btn--full">
+      </p>
+    {%- endform -%}
+  </div>
+</div>
+<!-- Shopify customer account -- set business customers as VAT exempt when applicable. Used by Sufio for Shopify (www.sufio.com/shopify). -->
+<script type="text/javascript">
+  function getCookieValue(a) { var b = document.cookie.match('(^|;)\\s*' + a + '\\s*=\\s*([^;]+)'); return b ? b.pop() : ''; }
+  
+  document.addEventListener("DOMContentLoaded", function(event) {
+    var email = "{{ customer.email }}";
+    if (email && getCookieValue("sufio_vat_email_init") != email) {
+      document.cookie = "sufio_vat_email_init="+email+";expires=Tue, 31 Dec 2030 00:00:00 GMT;path=/";
+      $.ajax({
+        type : "GET",
+        dataType: "jsonp",
+        url: "/apps/sufio/customer-vat/",
+        data: { email: email }
+      }); 
+    }
+  });
+</script>
+

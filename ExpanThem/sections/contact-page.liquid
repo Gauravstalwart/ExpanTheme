@@ -1,0 +1,190 @@
+<div class="index-section contact-form-main-section newsletter-{{ section.id }} color-scheme-{{ section.settings.color_scheme }}">
+  {%- if section.settings.color_scheme != 'none' -%}
+    {%- render 'color-scheme-texture', color_scheme: section.settings.color_scheme -%}
+  {%- endif -%}
+  <div class="page-width{% if section.settings.narrow_column %} page-width--narrow{% endif %}">
+    <div class="contact-page-main-cls">
+      <div class="grid grid--small">
+        <div class="grid__item medium-up--one-half left-sticky-details">
+         {% for block in section.blocks %}
+           {% case block.type %}
+             {% when "text" %}
+               <div class="infoandroute">
+                <{{ block.settings.heading_type }}><b>{{ block.settings.heading }}</b></{{ block.settings.heading_type }}>
+                {{ block.settings.content }}
+              </div>
+              {% when 'link'%}
+               <div class="infoandroute">
+                <{{ block.settings.heading_type }}><b>{{ block.settings.link_heading }}</b></{{ block.settings.heading_type }}>
+                <ul class="quick-link-inner">
+                  {% for link in block.settings.link.links %}
+                  <li>
+                    <a href="{{ link.url }}" data-location="internal">{{ link.title }}</a>
+                  </li>
+                    {% endfor %}
+                </ul>
+              </div>
+            {% endcase %}
+          {% endfor %} 
+        </div>
+
+           {% render 'contact-form' %}  
+      </div>
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Contact Page",
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "t:sections.contact-form.settings.content"
+    },
+    {
+      "type": "text",
+      "id": "form_title",
+      "label": "Form Title",
+      "default": "Contact us"
+    },
+    {
+      "type": "checkbox",
+      "id": "narrow_column",
+      "label": "t:sections.contact-form.settings.narrow_column.label",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "label": "t:sections.contact-form.settings.color_scheme.label",
+      "default": "1",
+      "options": [
+        {
+          "value": "none",
+          "label": "t:sections.contact-form.settings.color_scheme.options.none.label"
+        },
+        {
+          "value": "1",
+          "label": "1"
+        },
+        {
+          "value": "2",
+          "label": "2"
+        },
+        {
+          "value": "3",
+          "label": "3"
+        }
+      ]
+    }
+  ],
+  "blocks":[
+    {
+      "type":"text",
+      "name":"Text",
+      "settings":[
+        {
+          "type":"text",
+          "id":"heading",
+          "label":"heading"
+        },
+        {
+          "type":"select",
+          "label":"Heading Type",
+          "id":"heading_type",
+          "default":"h1",
+          "options":[
+            {
+              "label":"H1",
+              "value":"h1"
+            },
+            {
+              "label":"H2",
+              "value":"h2"
+            },
+            {
+              "label":"H3",
+              "value":"h3"
+            },
+            {
+              "label":"H4",
+              "value":"h4"
+            },
+            {
+              "label":"H5",
+              "value":"h5"
+            },
+            {
+              "label":"H6",
+              "value":"h6"
+            }
+          ]
+        },
+        {
+          "type":"richtext",
+          "id":"content",
+          "label":"content"
+        }
+      ]
+    },
+    {
+      "type":"link",
+      "name":"Link",
+      "settings":[
+        {
+          "type":"text",
+          "id":"link_heading",
+          "label":"Link Heading"
+        },
+        {
+          "type":"link_list",
+          "id":"link",
+          "label":"Link"
+        },
+        {
+          "type":"select",
+          "label":"Heading Type",
+          "id":"heading_type",
+          "default":"h1",
+          "options":[
+            {
+              "label":"H1",
+              "value":"h1"
+            },
+            {
+              "label":"H2",
+              "value":"h2"
+            },
+            {
+              "label":"H3",
+              "value":"h3"
+            },
+            {
+              "label":"H4",
+              "value":"h4"
+            },
+            {
+              "label":"H5",
+              "value":"h5"
+            },
+            {
+              "label":"H6",
+              "value":"h6"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Contact Page"
+    }
+  ]
+}
+{% endschema %}
+
+{% stylesheet %}
+
+{% endstylesheet %}
